@@ -185,9 +185,12 @@
                 <docs.home>../data/docs</docs.home>
               </systemProperties>
               <webApp>
-                <contextPath>/docs-web</contextPath>
+                <contextPath>/</contextPath>
                 <overrideDescriptor>${project.basedir}/src/dev/main/webapp/web-override.xml</overrideDescriptor>
               </webApp>
+              <httpConnector>
+                <port>8080</port>
+              </httpConnector>
             </configuration>
           </plugin>
           
