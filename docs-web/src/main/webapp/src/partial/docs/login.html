@@ -74,11 +74,12 @@
             </div>
           </div>
 
-          <p class="text-center" ng-if="app.guest_login">&nbsp;</p>
-
-          <button type="submit" class="btn btn-default btn-block" ng-if="app.guest_login" ng-click="loginAsGuest()">
-            <span class="fas fa-user"></span> {{ 'login.login_as_guest' | translate }}
-          </button>
+          <div ng-if="app.guest_login">
+            <hr />
+            <button type="submit" class="btn btn-info btn-block" ng-click="loginAsGuest()">
+              <span class="fas fa-user"></span> {{ 'login.login_as_guest' | translate }}
+            </button>
+          </div>
         </form>
       </div>
     </div>
