@@ -116,6 +116,33 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${org.eclipse.jetty.jetty-maven-plugin.version}</version>
       </plugin>
+      
+      <!-- Maven Site Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.12.1</version>
+      </plugin>
+      
+      <!-- PMD Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.21.0</version>
+        <configuration>
+          <rulesets>
+            <ruleset>custom-pmd-ruleset.xml</ruleset>
+          </rulesets>
+          <failOnViolation>false</failOnViolation>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -490,5 +517,40 @@
 
     </dependencies>
   </dependencyManagement>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.4.5</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <!-- Select the reports you want to generate -->
+              <report>index</report>
+              <report>summary</report>
+              <report>modules</report>
+              <report>team</report>
+              <report>dependencies</report>
+              <report>dependency-management</report>
+              <report>plugins</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <!-- PMD Reporting Configuration -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.21.0</version>
+        <configuration>
+          <rulesets>
+            <ruleset>custom-pmd-ruleset.xml</ruleset>
+          </rulesets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 
 </project>
