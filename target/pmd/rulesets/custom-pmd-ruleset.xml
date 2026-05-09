@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="Custom Ruleset for CS304"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset/2.0.0/xsd/ruleset_2_0_0.xsd">
+
+    <description>Custom PMD ruleset focusing on software metrics for CS304 assignment</description>
+
+    <!-- Lines of Code (LoC) - Measuring length of classes and methods -->
+    <rule ref="category/java/design.xml/ExcessiveClassLength">
+        <description>A class with too many lines of code indicates that it probably does too many things and 
+        violates the Single Responsibility Principle.</description>
+        <priority>3</priority>
+    </rule>
+    
+    <rule ref="category/java/design.xml/ExcessiveMethodLength">
+        <description>A method with too many lines of code becomes difficult to understand and maintain.</description>
+        <priority>3</priority>
+    </rule>
+
+    <!-- Cyclomatic Complexity (CC) - Measures the number of linearly independent paths -->
+    <rule ref="category/java/design.xml/CyclomaticComplexity">
+        <description>Cyclomatic complexity is determined by the number of linearly independent paths through a method body. 
+        A high cyclomatic complexity generally indicates over-complicated logic that should be broken down.</description>
+        <priority>3</priority>
+    </rule>
+
+    <!-- Weighted Methods per Class (WMC) - Sum of complexities of all methods in a class -->
+    <rule ref="category/java/design.xml/TooManyMethods">
+        <description>A class with too many methods is probably a good suspect for refactoring, in order to reduce 
+        its complexity and find a way to have more fine grained objects.</description>
+        <priority>3</priority>
+    </rule>
+
+    <!-- Coupling Between Objects (CBO) - Count of classes a given class is coupled to -->
+    <rule ref="category/java/design.xml/CouplingBetweenObjects">
+        <description>This rule counts the number of instantiations and method calls to other classes from a given class. 
+        High coupling indicates poor modularity and makes maintenance harder.</description>
+        <priority>3</priority>
+    </rule>
+
+    <!-- Lack of Cohesion in Methods (LCOM) - God Class detection as an indicator of low cohesion -->
+    <rule ref="category/java/design.xml/GodClass">
+        <description>A God Class is a class that centralizes too much functionality and exhibits low cohesion. 
+        This suggests that the class is doing too many things and should be broken down into smaller classes.</description>
+        <priority>3</priority>
+    </rule>
+
+</ruleset>
