@@ -9,15 +9,28 @@ def runCommand(String unixCommand, String windowsCommand = null) {
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'DOCKER_IMAGE', defaultValue: 'your-dockerhub-username/teedy-app', description: 'Docker Hub repository, for example: yourname/teedy-app')
+        string(name: 'DOCKER_HUB_CREDENTIALS_ID', defaultValue: 'dockerhub_credentials', description: 'Jenkins username/password credentials ID for Docker Hub')
+        string(name: 'BASE_IMAGE', defaultValue: 'public.ecr.aws/ubuntu/ubuntu:22.04', description: 'Base Ubuntu image used by Dockerfile')
+        string(name: 'APT_MIRROR', defaultValue: 'http://mirrors.aliyun.com/ubuntu/', description: 'Ubuntu apt mirror used during docker build')
+    }
+
     environment {
-        DOCKER_HUB_CREDENTIALS_ID = 'dockerhub_credentials'
-        DOCKER_IMAGE = 'your-dockerhub-username/teedy-app'
         DOCKER_TAG = "${BUILD_NUMBER}"
-        BASE_IMAGE = 'public.ecr.aws/ubuntu/ubuntu:22.04'
-        APT_MIRROR = 'http://mirrors.aliyun.com/ubuntu/'
     }
 
     stages {
+        stage('Validate Config') {
+            steps {
+                script {
+                    if (params.DOCKER_IMAGE == 'your-dockerhub-username/teedy-app') {
+                        error 'Please set DOCKER_IMAGE to your real Docker Hub repository, for example: cjy/teedy-app'
+                    }
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 checkout scm
@@ -31,8 +44,8 @@ pipeline {
             steps {
                 script {
                     runCommand(
-                        "docker build --build-arg BASE_IMAGE=${env.BASE_IMAGE} --build-arg APT_MIRROR=${env.APT_MIRROR} -t ${env.DOCKER_IMAGE}:${env.DOCKER_TAG} -t ${env.DOCKER_IMAGE}:latest .",
-                        "docker build --build-arg BASE_IMAGE=${env.BASE_IMAGE} --build-arg APT_MIRROR=${env.APT_MIRROR} -t ${env.DOCKER_IMAGE}:${env.DOCKER_TAG} -t ${env.DOCKER_IMAGE}:latest ."
+                        "docker build --build-arg BASE_IMAGE=${params.BASE_IMAGE} --build-arg APT_MIRROR=${params.APT_MIRROR} -t ${params.DOCKER_IMAGE}:${env.DOCKER_TAG} -t ${params.DOCKER_IMAGE}:latest .",
+                        "docker build --build-arg BASE_IMAGE=${params.BASE_IMAGE} --build-arg APT_MIRROR=${params.APT_MIRROR} -t ${params.DOCKER_IMAGE}:${env.DOCKER_TAG} -t ${params.DOCKER_IMAGE}:latest ."
                     )
                 }
             }
@@ -41,7 +54,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: "${env.DOCKER_HUB_CREDENTIALS_ID}",
+                    credentialsId: "${params.DOCKER_HUB_CREDENTIALS_ID}",
                     usernameVariable: 'DOCKERHUB_USERNAME',
                     passwordVariable: 'DOCKERHUB_PASSWORD'
                 )]) {
@@ -51,12 +64,12 @@ pipeline {
                             'powershell -NoProfile -Command "$env:DOCKERHUB_PASSWORD | docker login -u $env:DOCKERHUB_USERNAME --password-stdin"'
                         )
                         runCommand(
-                            "docker push ${env.DOCKER_IMAGE}:${env.DOCKER_TAG}",
-                            "docker push ${env.DOCKER_IMAGE}:${env.DOCKER_TAG}"
+                            "docker push ${params.DOCKER_IMAGE}:${env.DOCKER_TAG}",
+                            "docker push ${params.DOCKER_IMAGE}:${env.DOCKER_TAG}"
                         )
                         runCommand(
-                            "docker push ${env.DOCKER_IMAGE}:latest",
-                            "docker push ${env.DOCKER_IMAGE}:latest"
+                            "docker push ${params.DOCKER_IMAGE}:latest",
+                            "docker push ${params.DOCKER_IMAGE}:latest"
                         )
                     }
                 }
@@ -77,8 +90,8 @@ pipeline {
                             "docker rm ${name} || exit /b 0"
                         )
                         runCommand(
-                            "docker run --name ${name} -d -p ${port}:8080 ${env.DOCKER_IMAGE}:${env.DOCKER_TAG}",
-                            "docker run --name ${name} -d -p ${port}:8080 ${env.DOCKER_IMAGE}:${env.DOCKER_TAG}"
+                            "docker run --name ${name} -d -p ${port}:8080 ${params.DOCKER_IMAGE}:${env.DOCKER_TAG}",
+                            "docker run --name ${name} -d -p ${port}:8080 ${params.DOCKER_IMAGE}:${env.DOCKER_TAG}"
                         )
                     }
                     runCommand(
