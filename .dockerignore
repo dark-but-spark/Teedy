@@ -1,0 +1,10 @@
+.git
+.gitignore
+data
+target
+**/target
+Tutorial10-Docker.txt
+Practice10-CICD.txt
+
+!docs-web/target/
+!docs-web/target/docs-web-*.war

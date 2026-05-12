@@ -1,5 +1,7 @@
-FROM ubuntu:22.04
+ARG BASE_IMAGE=ubuntu:22.04
+FROM ${BASE_IMAGE}
 LABEL maintainer="b.gamard@sismics.com"
+ARG APT_MIRROR=
 
 # Run Debian in non interactive mode
 ENV DEBIAN_FRONTEND noninteractive
@@ -13,8 +15,11 @@ ENV JETTY_VERSION 11.0.20
 ENV JETTY_HOME /opt/jetty
 
 # Install packages
-RUN apt-get update && \
-    apt-get -y -q --no-install-recommends install \
+RUN if [ -n "$APT_MIRROR" ]; then \
+        sed -i "s|http://archive.ubuntu.com/ubuntu/|${APT_MIRROR}|g; s|http://security.ubuntu.com/ubuntu/|${APT_MIRROR}|g" /etc/apt/sources.list; \
+    fi && \
+    apt-get -o Acquire::Retries=5 update && \
+    apt-get -o Acquire::Retries=5 -y -q --no-install-recommends install \
     vim less procps unzip wget tzdata openjdk-11-jdk \
     ffmpeg \
     mediainfo \
